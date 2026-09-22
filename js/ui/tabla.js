@@ -26,6 +26,14 @@ const TablaUI = {
     this._actualizarEstadoVacio();
   },
 
+  /** Elimina del DOM la fila correspondiente a una reserva y actualiza el resumen. */
+  eliminarFila(idReserva) {
+    const fila = this.cuerpoTabla.querySelector(`tr[data-id="${idReserva}"]`);
+    if (fila) fila.remove();
+    this._actualizarContador();
+    this._actualizarEstadoVacio();
+  },
+
   /** Construye una fila de la tabla para una reserva. */
   _crearFila(reserva) {
     const fila = document.createElement('tr');

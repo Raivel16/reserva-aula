@@ -36,6 +36,14 @@ const EstadoReservas = {
     return reserva;
   },
 
+  /** Elimina una reserva por su id y la devuelve; si no existe, devuelve null. */
+  eliminar(idReserva) {
+    const indice = this.reservas.findIndex((reserva) => reserva.id === idReserva);
+    if (indice === -1) return null;
+    const [reserva] = this.reservas.splice(indice, 1);
+    return reserva;
+  },
+
   /**
    * Valida que todos los datos de una reserva estén completos y que el
    * horario no haya transcurrido ya. Devuelve un arreglo de mensajes de error.

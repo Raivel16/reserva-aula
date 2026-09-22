@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', iniciar);
 /** Punto de entrada de la aplicación. */
 function iniciar() {
   FormularioUI.inicializar();
-  TablaUI.inicializar({ alEliminar: null });
+  TablaUI.inicializar({ alEliminar: eliminarReserva });
   MensajesUI.inicializar();
   mostrarFechaActual();
   TablaUI.renderizar(EstadoReservas.obtenerTodas());
@@ -40,6 +40,16 @@ function manejarEnvioReserva(evento) {
   FormularioUI.limpiar();
   MensajesUI.mostrarExito(
     `Reserva registrada: ${obtenerNombreAula(reserva.aulaId)} · ${formatearFecha(reserva.fecha)} · ${reserva.horario} · ${reserva.actividad}.`
+  );
+}
+
+/** Elimina una reserva por su id, actualiza la tabla y libera el aula. */
+function eliminarReserva(idReserva) {
+  const reserva = EstadoReservas.eliminar(idReserva);
+  if (!reserva) return;
+  TablaUI.eliminarFila(idReserva);
+  MensajesUI.mostrarExito(
+    `Reserva eliminada. ${obtenerNombreAula(reserva.aulaId)} queda libre el ${formatearFecha(reserva.fecha)} a las ${reserva.horario}.`
   );
 }
 
