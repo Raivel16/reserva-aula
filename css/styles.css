@@ -190,6 +190,10 @@ body {
   background: #fff5f5 !important;
 }
 
+.campo--invalido:focus {
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.18);
+}
+
 /* ---------- Botones ---------- */
 .boton {
   font: inherit;
