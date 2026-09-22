@@ -79,7 +79,6 @@ function renderizarIndicadores() {
   IndicadoresUI.renderizar({
     reservas: EstadoReservas.obtenerTodas(),
     fecha: FormularioUI.elementos.fecha.value,
-    horario: FormularioUI.elementos.horario.value,
   });
 }
 
