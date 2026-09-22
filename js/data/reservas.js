@@ -44,6 +44,13 @@ const EstadoReservas = {
     return reserva;
   },
 
+  /** Devuelve los horarios ya ocupados de un aula en una fecha determinada. */
+  obtenerHorariosOcupados(aulaId, fecha) {
+    return this.reservas
+      .filter((reserva) => reserva.aulaId === aulaId && reserva.fecha === fecha)
+      .map((reserva) => reserva.horario);
+  },
+
   /**
    * Valida que todos los datos de una reserva estén completos y que el
    * horario no haya transcurrido ya. Devuelve un arreglo de mensajes de error.
