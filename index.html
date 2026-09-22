@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Reserva Aula: sistema para registrar reservas y visualizar la disponibilidad de aulas académicas.">
+  <title>Reserva Aula · Sistema de reservas de aulas</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <noscript>
+    <p class="sin-js">Esta aplicación necesita JavaScript para funcionar. Actívalo en tu navegador.</p>
+  </noscript>
+
+  <header class="cabecera">
+    <div class="cabecera__contenido">
+      <div class="cabecera__marca">
+        <span class="cabecera__icono" aria-hidden="true">🏛️</span>
+        <div>
+          <h1 class="cabecera__titulo">Reserva Aula</h1>
+          <p class="cabecera__subtitulo">Sistema de gestión de aulas académicas</p>
+        </div>
+      </div>
+      <p class="cabecera__fecha" id="fecha-actual"></p>
+    </div>
+  </header>
+
+  <main class="contenido">
+    <!-- Formulario de reserva -->
+    <section class="tarjeta" aria-labelledby="titulo-formulario">
+      <h2 class="titulo-seccion" id="titulo-formulario">📝 Nueva reserva</h2>
+
+      <form id="formulario-reserva" class="formulario" novalidate>
+        <div class="formulario__campo">
+          <label for="aula">Aula</label>
+          <select id="aula" name="aula" required>
+            <option value="" disabled selected>Selecciona un aula</option>
+          </select>
+        </div>
+
+        <div class="formulario__campo">
+          <label for="fecha">Fecha</label>
+          <input type="date" id="fecha" name="fecha" required>
+        </div>
+
+        <div class="formulario__campo">
+          <label for="horario">Horario</label>
+          <select id="horario" name="horario" required>
+            <option value="" disabled selected>Selecciona un horario</option>
+          </select>
+        </div>
+
+        <div class="formulario__campo">
+          <label for="actividad">Actividad</label>
+          <input type="text" id="actividad" name="actividad" placeholder="Ej.: Clase de Matemáticas" maxlength="80" required>
+        </div>
+
+        <button type="submit" class="boton boton--principal" id="boton-reservar">Reservar aula</button>
+      </form>
+
+      <p id="mensaje-formulario" class="mensaje" role="status" aria-live="polite"></p>
+    </section>
+
+    <!-- Tabla de reservas -->
+    <section class="tarjeta" aria-labelledby="titulo-reservas">
+      <div class="cabecera-seccion">
+        <h2 class="titulo-seccion" id="titulo-reservas">🗓️ Reservas realizadas</h2>
+        <span class="contador" id="contador-reservas">0 reservas</span>
+      </div>
+
+      <div class="tabla-contenedor">
+        <table class="tabla">
+          <thead>
+            <tr>
+              <th scope="col">Aula</th>
+              <th scope="col">Fecha</th>
+              <th scope="col">Horario</th>
+              <th scope="col">Actividad</th>
+              <th scope="col" class="tabla__columna-acciones">Acción</th>
+            </tr>
+          </thead>
+          <tbody id="cuerpo-tabla"></tbody>
+        </table>
+        <p id="tabla-vacia" class="estado-vacio">Aún no hay reservas registradas.</p>
+      </div>
+    </section>
+
+    <!-- Indicadores de disponibilidad -->
+    <section class="tarjeta" aria-labelledby="titulo-disponibilidad">
+      <div class="cabecera-seccion">
+        <h2 class="titulo-seccion" id="titulo-disponibilidad">📊 Disponibilidad de aulas</h2>
+        <p class="leyenda">
+          <span class="leyenda__item"><span class="leyenda__color leyenda__color--libre"></span>Libre</span>
+          <span class="leyenda__item"><span class="leyenda__color leyenda__color--ocupada"></span>Ocupada</span>
+          <span class="leyenda__item"><span class="leyenda__color leyenda__color--pasado"></span>No disponible</span>
+        </p>
+      </div>
+      <p class="nota-disponibilidad">Elige una fecha para ver la disponibilidad de cada aula por horario. <strong>Haz clic</strong> en una celda verde para precargar el formulario.</p>
+      <div class="tablero-contenedor">
+        <div id="tablero-disponibilidad" class="tablero"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="pie">
+    <p>Reserva Aula · Desarrollado con HTML, CSS y JavaScript</p>
+  </footer>
+</body>
+</html>
