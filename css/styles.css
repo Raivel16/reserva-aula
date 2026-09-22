@@ -501,4 +501,46 @@ body {
   .cabecera__contenido {
     padding: 16px 14px;
   }
+
+  .cabecera__icono {
+    width: 44px;
+    height: 44px;
+    font-size: 22px;
+  }
+}
+
+/* ---------- Pulido final ---------- */
+/* Entrada suave de las tarjetas al cargar la página */
+.contenido .tarjeta {
+  animation: aparecer 420ms ease both;
+}
+
+.contenido .tarjeta:nth-child(2) {
+  animation-delay: 60ms;
+}
+
+.contenido .tarjeta:nth-child(3) {
+  animation-delay: 120ms;
+}
+
+/* Filas alternadas para mejorar la lectura de la tabla */
+.tabla tbody tr:nth-child(even) {
+  background: #f8fafc;
+}
+
+.tabla tbody tr:hover {
+  background: var(--color-primario-claro);
+}
+
+.tabla tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Menos movimiento para personas sensibles al movimiento */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
