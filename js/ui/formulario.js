@@ -21,6 +21,7 @@ const FormularioUI = {
     this.elementos.actividad = document.querySelector('#actividad');
     this._ajustarFechaMinima();
     this._poblarSelectores();
+    this._quitarMarcaAlEditar();
   },
 
   /** Rellena los selectores de aula y horario desde el catálogo. */
@@ -62,5 +63,30 @@ const FormularioUI = {
   limpiar() {
     this.elementos.formulario.reset();
     this.elementos.fecha.value = fechaHoyISO();
+    this.limpiarEstadosInvalido();
+  },
+
+  /** Quita el marcado de error (clase y aria-invalid) de todos los campos. */
+  limpiarEstadosInvalido() {
+    this._obtenerCampos().forEach((campo) => {
+      campo.classList.remove('campo--invalido');
+      campo.removeAttribute('aria-invalid');
+    });
+  },
+
+  /** Al editar un campo se limpia su marca de error para no confundir al usuario. */
+  _quitarMarcaAlEditar() {
+    this._obtenerCampos().forEach((campo) => {
+      const evento = campo.tagName === 'INPUT' ? 'input' : 'change';
+      campo.addEventListener(evento, () => {
+        campo.classList.remove('campo--invalido');
+        campo.removeAttribute('aria-invalid');
+      });
+    });
+  },
+
+  /** Lista de los cuatro campos del formulario de reserva. */
+  _obtenerCampos() {
+    return [this.elementos.aula, this.elementos.fecha, this.elementos.horario, this.elementos.actividad];
   },
 };
