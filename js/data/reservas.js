@@ -35,6 +35,24 @@ const EstadoReservas = {
     this.reservas.push(reserva);
     return reserva;
   },
+
+  /**
+   * Valida que todos los datos de una reserva estén completos y que el
+   * horario no haya transcurrido ya. Devuelve un arreglo de mensajes de error.
+   */
+  validarDatosReserva(datos) {
+    const errores = [];
+    if (!datos.aulaId) errores.push('Debes seleccionar un aula.');
+    if (!datos.fecha) errores.push('Debes indicar una fecha.');
+    if (!datos.horario) errores.push('Debes seleccionar un horario.');
+    if (!datos.actividad || datos.actividad.trim() === '') {
+      errores.push('Debes escribir una actividad.');
+    }
+    if (datos.fecha && datos.horario && esHorarioPasado(datos.fecha, datos.horario)) {
+      errores.push('El horario elegido ya pasó para la fecha seleccionada.');
+    }
+    return errores;
+  },
 };
 
 /** Devuelve la fecha de hoy en formato YYYY-MM-DD (no se reserva en el pasado). */
@@ -44,4 +62,14 @@ function fechaHoyISO() {
   const mes = String(hoy.getMonth() + 1).padStart(2, '0');
   const dia = String(hoy.getDate()).padStart(2, '0');
   return `${anio}-${mes}-${dia}`;
+}
+
+/** Determina si un bloque horario ya transcurrió para la fecha indicada. */
+function esHorarioPasado(fechaISO, horario) {
+  if (!fechaISO || !horario) return false;
+  const [anio, mes, dia] = fechaISO.split('-').map(Number);
+  const horaInicio = Number(horario.slice(0, 2));
+  const minutoInicio = Number(horario.slice(3, 5)) || 0;
+  const momentoHorario = new Date(anio, mes - 1, dia, horaInicio, minutoInicio);
+  return momentoHorario.getTime() < Date.now();
 }

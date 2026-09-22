@@ -20,15 +20,11 @@ function manejarEnvioReserva(evento) {
   evento.preventDefault();
   MensajesUI.limpiar();
   const datos = FormularioUI.obtenerDatos();
+  aplicarEstadoInvalido(datos);
 
-  const camposFaltantes = [];
-  if (!datos.aulaId) camposFaltantes.push('el aula');
-  if (!datos.fecha) camposFaltantes.push('la fecha');
-  if (!datos.horario) camposFaltantes.push('el horario');
-  if (!datos.actividad) camposFaltantes.push('la actividad');
-
-  if (camposFaltantes.length > 0) {
-    MensajesUI.mostrarError(`Completa los campos obligatorios: ${camposFaltantes.join(', ')}.`);
+  const errores = EstadoReservas.validarDatosReserva(datos);
+  if (errores.length > 0) {
+    MensajesUI.mostrarError(errores.join(' '));
     return;
   }
 
@@ -45,6 +41,23 @@ function manejarEnvioReserva(evento) {
   MensajesUI.mostrarExito(
     `Reserva registrada: ${obtenerNombreAula(reserva.aulaId)} · ${formatearFecha(reserva.fecha)} · ${reserva.horario} · ${reserva.actividad}.`
   );
+}
+
+/** Marca visual y semánticamente los campos vacíos (classList + aria-invalid). */
+function aplicarEstadoInvalido(datos) {
+  const campos = {
+    aulaId: FormularioUI.elementos.aula,
+    fecha: FormularioUI.elementos.fecha,
+    horario: FormularioUI.elementos.horario,
+    actividad: FormularioUI.elementos.actividad,
+  };
+
+  Object.entries(campos).forEach(([clave, campo]) => {
+    const estaVacio = String(datos[clave] ?? '').trim() === '';
+    campo.classList.toggle('campo--invalido', estaVacio);
+    if (estaVacio) campo.setAttribute('aria-invalid', 'true');
+    else campo.removeAttribute('aria-invalid');
+  });
 }
 
 /** Muestra la fecha de hoy con formato largo en la cabecera. */
