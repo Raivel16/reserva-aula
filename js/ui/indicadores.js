@@ -7,6 +7,8 @@
 const IndicadoresUI = {
   contenedor: null,
   alSeleccionarCelda: null,
+  /** Celda pulsada por el usuario: { aulaId, fecha, horario } o null. */
+  seleccion: null,
 
   inicializar(opciones) {
     this.contenedor = document.querySelector('#tablero-disponibilidad');
@@ -14,13 +16,18 @@ const IndicadoresUI = {
   },
 
   /** Dibuja el tablero completo para la fecha seleccionada. */
-  renderizar({ reservas, fecha, horario }) {
+  renderizar({ reservas, fecha }) {
     this.contenedor.textContent = '';
     const fechaEfectiva = fecha || fechaHoyISO();
 
+    // Si se cambia la fecha, la selección previa ya no aplica a lo mostrado.
+    if (this.seleccion && this.seleccion.fecha !== fechaEfectiva) {
+      this.seleccion = null;
+    }
+
     this._renderizarEncabezado();
     AULAS.forEach((aula) => {
-      this._renderizarFilaAula(aula, reservas, fechaEfectiva, horario);
+      this._renderizarFilaAula(aula, reservas, fechaEfectiva);
     });
   },
 
@@ -46,7 +53,7 @@ const IndicadoresUI = {
   },
 
   /** Fila del tablero para un aula: nombre, resumen y una celda por horario. */
-  _renderizarFilaAula(aula, reservas, fecha, horarioSeleccionado) {
+  _renderizarFilaAula(aula, reservas, fecha) {
     const fila = document.createElement('div');
     fila.className = 'tablero__fila';
 
@@ -73,10 +80,17 @@ const IndicadoresUI = {
           ? 'ocupada'
           : 'libre';
 
+      // La selección es por celda exacta (aula + fecha + horario), no por columna.
+      const estaSeleccionada =
+        this.seleccion !== null &&
+        this.seleccion.aulaId === aula.id &&
+        this.seleccion.fecha === fecha &&
+        this.seleccion.horario === horario;
+
       const celda = document.createElement('button');
       celda.type = 'button';
       celda.className = `celda celda--${estado}`;
-      if (horario === horarioSeleccionado) celda.classList.add('celda--seleccionada');
+      if (estaSeleccionada) celda.classList.add('celda--seleccionada');
       celda.textContent = horario.slice(0, 5);
       celda.setAttribute('title', `${aula.nombre} · ${horario}${estaOcupada ? ' · Ocupada' : ''}`);
       celda.setAttribute('data-aula-id', aula.id);
@@ -86,6 +100,7 @@ const IndicadoresUI = {
         celda.setAttribute('disabled', '');
       } else {
         celda.addEventListener('click', () => {
+          this.seleccion = { aulaId: aula.id, fecha, horario };
           const accion = this.alSeleccionarCelda;
           if (accion) accion({ aulaId: aula.id, fecha, horario });
         });
