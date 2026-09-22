@@ -44,9 +44,8 @@ const FormularioUI = {
 
   /** Impide reservar fechas pasadas y deja la fecha de hoy por defecto. */
   _ajustarFechaMinima() {
-    const hoy = this._fechaHoyISO();
-    this.elementos.fecha.setAttribute('min', hoy);
-    this.elementos.fecha.value = hoy;
+    this.elementos.fecha.setAttribute('min', fechaHoyISO());
+    this.elementos.fecha.value = fechaHoyISO();
   },
 
   /** Lee los valores actuales del formulario. */
@@ -62,15 +61,6 @@ const FormularioUI = {
   /** Vacía el formulario y lo devuelve a su estado inicial. */
   limpiar() {
     this.elementos.formulario.reset();
-    this.elementos.fecha.value = this._fechaHoyISO();
-  },
-
-  /** Calcula la fecha de hoy en formato YYYY-MM-DD. */
-  _fechaHoyISO() {
-    const hoy = new Date();
-    const anio = hoy.getFullYear();
-    const mes = String(hoy.getMonth() + 1).padStart(2, '0');
-    const dia = String(hoy.getDate()).padStart(2, '0');
-    return `${anio}-${mes}-${dia}`;
+    this.elementos.fecha.value = fechaHoyISO();
   },
 };
