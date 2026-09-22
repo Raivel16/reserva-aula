@@ -10,9 +10,15 @@ function iniciar() {
   FormularioUI.inicializar();
   TablaUI.inicializar({ alEliminar: eliminarReserva });
   MensajesUI.inicializar();
+  IndicadoresUI.inicializar({ alSeleccionarCelda: precargarFormulario });
   mostrarFechaActual();
   TablaUI.renderizar(EstadoReservas.obtenerTodas());
-  FormularioUI.elementos.formulario.addEventListener('submit', manejarEnvioReserva);
+  renderizarIndicadores();
+
+  const { formulario, fecha, horario } = FormularioUI.elementos;
+  formulario.addEventListener('submit', manejarEnvioReserva);
+  fecha.addEventListener('change', renderizarIndicadores);
+  horario.addEventListener('change', renderizarIndicadores);
 }
 
 /** Registra una reserva válida o muestra un mensaje de error. */
@@ -37,6 +43,7 @@ function manejarEnvioReserva(evento) {
 
   const reserva = EstadoReservas.agregar(datos);
   TablaUI.renderizar(EstadoReservas.obtenerTodas());
+  renderizarIndicadores();
   FormularioUI.limpiar();
   MensajesUI.mostrarExito(
     `Reserva registrada: ${obtenerNombreAula(reserva.aulaId)} · ${formatearFecha(reserva.fecha)} · ${reserva.horario} · ${reserva.actividad}.`
@@ -48,9 +55,32 @@ function eliminarReserva(idReserva) {
   const reserva = EstadoReservas.eliminar(idReserva);
   if (!reserva) return;
   TablaUI.eliminarFila(idReserva);
+  renderizarIndicadores();
   MensajesUI.mostrarExito(
     `Reserva eliminada. ${obtenerNombreAula(reserva.aulaId)} queda libre el ${formatearFecha(reserva.fecha)} a las ${reserva.horario}.`
   );
+}
+
+/** Precarga aula, fecha y horario desde una celda libre del tablero. */
+function precargarFormulario(seleccion) {
+  const { aula, fecha, horario } = FormularioUI.elementos;
+  aula.value = seleccion.aulaId;
+  fecha.value = seleccion.fecha;
+  horario.value = seleccion.horario;
+  renderizarIndicadores();
+  FormularioUI.elementos.actividad.focus();
+  MensajesUI.mostrarInfo(
+    `Formulario precargado: ${obtenerNombreAula(seleccion.aulaId)}, ${formatearFecha(seleccion.fecha)} a las ${seleccion.horario}. Completa la actividad y pulsa Reservar.`
+  );
+}
+
+/** Redibuja el tablero de disponibilidad con el estado y la selección actuales. */
+function renderizarIndicadores() {
+  IndicadoresUI.renderizar({
+    reservas: EstadoReservas.obtenerTodas(),
+    fecha: FormularioUI.elementos.fecha.value,
+    horario: FormularioUI.elementos.horario.value,
+  });
 }
 
 /** Marca visual y semánticamente los campos vacíos (classList + aria-invalid). */
